@@ -16,7 +16,7 @@ const Profile = ({data}) => {
             <p>Gender: <span>{data.gender}</span></p>
             <p>Email: <span>{data.email}</span></p>
         </div>
-        </div>
+        </div> 
     </div>
   )
 }
