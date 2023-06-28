@@ -1,7 +1,10 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 //Display user details in the profile page
-const Profile = ({ data }) => {
+const Profile = () => {
+  const data = saveToLocalStorage(useSelector((state) => state.data)[0])
+  // console.log(data)
   return (
     <div className="profile-container">
       <h1>Profile</h1>
@@ -34,4 +37,9 @@ const Profile = ({ data }) => {
   );
 };
 
+//Saves user data to local storage
+function saveToLocalStorage(data) {
+  data &&  localStorage.setItem('data', JSON.stringify(data))
+  return JSON.parse(localStorage.getItem('data'))
+}
 export default Profile;

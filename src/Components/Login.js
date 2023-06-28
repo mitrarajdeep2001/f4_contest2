@@ -1,8 +1,10 @@
-import React, { useState} from "react";
-import Profile from "./Profile";
+import React, { useState, createContext } from "react";
 import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setData } from "../Store/Slices/DataSlice";
 
-let data;
+const Userdata = createContext();
 export default function LogIn() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +13,8 @@ export default function LogIn() {
   const [passwordMismatchMsg, setPasswordMismatchMsg] = useState(false);
   const [credentialMsg, setCredentialMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate(Navigate);
+  const dispatch = useDispatch();
 
   //Form validation(Error/Success Handling)
   function validateForm() {
@@ -49,10 +52,10 @@ export default function LogIn() {
           setSuccessMsg(true);
           setCredentialMsg("");
           setTimeout(() => {
-            setShowProfile(true);
+            navigate("/profile");
           }, 2000);
-          data = res.data
-          console.log(res.data);
+          dispatch(setData(res.data));
+          // console.log(res.data);
         } catch (error) {
           setCredentialMsg(error.response.data.message);
           console.log(error.response.data.message);
@@ -62,53 +65,52 @@ export default function LogIn() {
   }
   return (
     <>
-      {!showProfile && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            validateForm();
-          }}
-        >
-          <h2>LogIn</h2>
-          <div>
-            <label htmlFor="full-name">Full Name</label>
-            <input
-              id="full-name"
-              placeholder="Enter your fullname"
-              type="text"
-              onChange={(e) => setFullName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              placeholder="Enter password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="confirm-password">Confirm Password</label>
-            <input
-              id="confirm-password"
-              placeholder="Enter confirm password"
-              type="password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-          <div className="error-success-msg">
-            {errorMsg && <p id="error-msg">All the fields are mandatory</p>}
-            {passwordMismatchMsg && (
-              <p id="error-msg">Password and Confirm Password not matching</p>
-            )}
-            {credentialMsg && <p id="error-msg">{credentialMsg}</p>}
-            {successMsg && <p id="success-msg">Successfully LoggedIn!!</p>}
-          </div>
-          <input type="submit" value="LogIn" id="signup-btn" />
-        </form>
-      )}
-      {showProfile && <Profile data={data}/>}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          validateForm();
+        }}
+      >
+        <h2>LogIn</h2>
+        <div>
+          <label htmlFor="full-name">Full Name</label>
+          <input
+            id="full-name"
+            placeholder="Enter your fullname"
+            type="text"
+            onChange={(e) => setFullName(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            placeholder="Enter password"
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="confirm-password">Confirm Password</label>
+          <input
+            id="confirm-password"
+            placeholder="Enter confirm password"
+            type="password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+        <div className="error-success-msg">
+          {errorMsg && <p id="error-msg">All the fields are mandatory</p>}
+          {passwordMismatchMsg && (
+            <p id="error-msg">Password and Confirm Password not matching</p>
+          )}
+          {credentialMsg && <p id="error-msg">{credentialMsg}</p>}
+          {successMsg && <p id="success-msg">Successfully LoggedIn!!</p>}
+        </div>
+        <input type="submit" value="LogIn" id="signup-btn" />
+      </form>
     </>
   );
 }
+
+export { Userdata };
